@@ -61,4 +61,4 @@ jobs:
 
             # Запускаем новые контейнеры
             cd foodbox_bot
-            docker compose up
+            docker compose up -d
