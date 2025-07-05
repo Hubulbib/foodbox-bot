@@ -33,43 +33,52 @@ export const setupSubscriptionCommands = async (bot: Bot<AppContext>) => {
 
   // Оформление подписки
   bot.callbackQuery("create_subscription", async (ctx) => {
-    await ctx.answerCallbackQuery();
-
-    const userRepo = AppDataSource.getRepository(User);
-    const subscriptionRepo = AppDataSource.getRepository(Subscription);
-
-    const user = await userRepo.findOne({
-      where: { telegramId: ctx.from?.id },
-    });
-
-    if (!user) {
-      await ctx.editMessageText("Ошибка: пользователь не найден");
-      return;
-    }
-
-    const newSubscription = subscriptionRepo.create({
-      user,
-      startDate: new Date(),
-      endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 дней
-      isActive: true,
-    });
-
-    await subscriptionRepo.save(newSubscription);
-    ctx.session.hasSubscription = true;
-
     const keyboard = new InlineKeyboard().text(
       "🔙 Назад в меню",
       "back_to_menu"
     );
 
-    await ctx.editMessageText(
-      `🎉 <b>Подписка оформлена!</b>\n\n` +
-        `Действует до: ${newSubscription.endDate.toLocaleDateString()}`,
-      {
-        parse_mode: "HTML",
-        reply_markup: keyboard,
-      }
-    );
+    await ctx.reply("Данная функция находится в разработке. Попробуйте позже", {
+      reply_markup: keyboard,
+    });
+
+    // await ctx.answerCallbackQuery();
+
+    // const userRepo = AppDataSource.getRepository(User);
+    // const subscriptionRepo = AppDataSource.getRepository(Subscription);
+
+    // const user = await userRepo.findOne({
+    //   where: { telegramId: ctx.from?.id },
+    // });
+
+    // if (!user) {
+    //   await ctx.editMessageText("Ошибка: пользователь не найден");
+    //   return;
+    // }
+
+    // const newSubscription = subscriptionRepo.create({
+    //   user,
+    //   startDate: new Date(),
+    //   endDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // +30 дней
+    //   isActive: true,
+    // });
+
+    // await subscriptionRepo.save(newSubscription);
+    // ctx.session.hasSubscription = true;
+
+    // const keyboard = new InlineKeyboard().text(
+    //   "🔙 Назад в меню",
+    //   "back_to_menu"
+    // );
+
+    // await ctx.editMessageText(
+    //   `🎉 <b>Подписка оформлена!</b>\n\n` +
+    //     `Действует до: ${newSubscription.endDate.toLocaleDateString()}`,
+    //   {
+    //     parse_mode: "HTML",
+    //     reply_markup: keyboard,
+    //   }
+    // );
   });
 
   // Информация о подписке
