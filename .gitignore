@@ -1,0 +1,8 @@
+.idea
+node_modules
+dist
+build
+.env
+docker-compose.yml
+nginx
+docker-compose.yml
