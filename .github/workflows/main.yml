@@ -60,4 +60,5 @@ jobs:
             docker rmi ${{ secrets.DOCKER_HUB_USERNAME }}/foodbox-bot:latest || true
 
             # Запускаем новые контейнеры
+            cd foodbox_bot
             docker compose up
