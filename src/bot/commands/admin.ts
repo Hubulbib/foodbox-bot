@@ -13,6 +13,7 @@ import { User } from "../../entities/user.js";
 import { Advice } from "../../entities/advice.js";
 import { Subscription } from "../../entities/subscription.js";
 import { checkSubscription } from "../../utils/helpers.js";
+import { CartItem } from "../../entities/cart-item.js";
 
 export const setupAdminCommands = async (bot: Bot<AppContext>) => {
   // Команда для входа в админ-панель
@@ -171,12 +172,16 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
     const productId = parseInt(ctx.match[1]);
 
     const productRepo = AppDataSource.getRepository(Product);
+    const cartItemRepo = AppDataSource.getRepository(CartItem);
+
     const product = await productRepo.findOneBy({ id: productId });
 
     if (!product) {
       await ctx.reply("Произошла ошибка. Товар не найден");
       return;
     }
+
+    await cartItemRepo.delete({ productId: product.id });
 
     await productRepo.delete(productId);
 
