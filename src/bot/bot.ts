@@ -1,4 +1,4 @@
-import { Bot, InlineKeyboard } from "grammy";
+import { Bot, InlineKeyboard, Keyboard } from "grammy";
 import { AppContext } from "../interfaces.js";
 import { setupAdminCommands } from "./commands/admin.js";
 import { setupSubscriptionCommands } from "./commands/subscription.js";
@@ -46,6 +46,10 @@ export const setupBot = async (bot: Bot<AppContext>) => {
     } else if (isAdmin(ctx)) {
       await adminEventsInit(ctx, isAdmin);
       return next();
+    } else {
+      await ctx.reply("Выберите действие:", {
+        reply_markup: getMainMenu(isAdmin(ctx)),
+      });
     }
   });
 

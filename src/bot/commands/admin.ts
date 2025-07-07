@@ -148,6 +148,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
         .text("🖼 Фото", `edit_product_photo_${product.id}`)
         .text("📑 Категория", `edit_product_category_${product.id}`)
         .row()
+        .text("❌ Удалить товар", `delete_product_${product.id}`)
         .text("🔙 Назад", "admin_products_back");
 
       await ctx.editMessageText(
@@ -161,6 +162,25 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
         { reply_markup: keyboard }
       );
     }
+  });
+
+  bot.callbackQuery(/^delete_product_(\d+)$/, async (ctx) => {
+    if (!isAdmin(ctx)) return;
+    await ctx.answerCallbackQuery();
+
+    const productId = parseInt(ctx.match[1]);
+
+    const productRepo = AppDataSource.getRepository(Product);
+    const product = await productRepo.findOneBy({ id: productId });
+
+    if (!product) {
+      await ctx.reply("Произошла ошибка. Товар не найден");
+      return;
+    }
+
+    await productRepo.delete(productId);
+
+    await ctx.editMessageText("✅ Товар успешно удален");
   });
 
   // Обработчики редактирования отдельных полей
@@ -493,6 +513,8 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       .row()
       .text("📋 Управление заказами")
       .row()
+      .text("❓ Управление советами")
+      .row()
       .text("👥 Пользователи")
       .row()
       .text("◀️ Назад")
@@ -569,6 +591,8 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       .text("📑 Управление категориями")
       .row()
       .text("📋 Управление заказами")
+      .row()
+      .text("❓ Управление советами")
       .row()
       .text("👥 Пользователи")
       .row()

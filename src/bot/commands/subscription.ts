@@ -33,6 +33,8 @@ export const setupSubscriptionCommands = async (bot: Bot<AppContext>) => {
 
   // Оформление подписки
   bot.callbackQuery("create_subscription", async (ctx) => {
+    await ctx.answerCallbackQuery();
+
     const keyboard = new InlineKeyboard().text(
       "🔙 Назад в меню",
       "back_to_menu"
