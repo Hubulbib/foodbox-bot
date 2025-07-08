@@ -1,6 +1,6 @@
 import "dotenv/config";
 import "reflect-metadata";
-import { Bot, session } from "grammy";
+import { Bot, session, webhookCallback } from "grammy";
 import { DatabaseService } from "./services/database.js";
 import { setupBot } from "./bot/bot.js";
 import { AppContext, SessionData } from "./interfaces.js";
@@ -41,14 +41,15 @@ async function bootstrap() {
   await setupBot(bot);
 
   // Запуск бота
-  bot.start().catch((err) => console.log(err));
-  console.log("Bot is running...");
+  //bot.start().catch((err) => console.log(err));
+  //console.log("Bot is running...");
 
   const app = express();
   const PORT = +process.env.PORT;
 
   app.use(express.json());
   app.use(cors({ origin: process.env.WEB_APP_URL }));
+  app.use("/api/bot", webhookCallback(bot, "express"));
   app.use(asyncHandler(authMiddleware));
   app.use("/api/cart", cartRouter);
   app.use("/api/catalog", catalogRouter);
