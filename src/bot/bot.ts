@@ -29,7 +29,7 @@ export const setupBot = async (bot: Bot<AppContext>) => {
   const paymentService = new PaymentService(bot, notificationService);
 
   // Настройка меню
-  await setupMenu(bot);
+  //await setupMenu(bot);
 
   // Проверка подписки при каждом сообщении
   bot.use(async (ctx, next) => {
@@ -40,6 +40,7 @@ export const setupBot = async (bot: Bot<AppContext>) => {
   });
 
   bot.on("message", async (ctx, next) => {
+    console.log(ctx.chat);
     if (ctx.session.adviceStep) {
       await adviceEventsInit(ctx);
       return next();
