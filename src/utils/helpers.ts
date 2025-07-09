@@ -28,10 +28,10 @@ export const generateOrderNumber = (): string => {
   return `${randomLetter}${randomNumber}`;
 };
 
-export const checkSubscription = async (userId: number): Promise<boolean> => {
+export const checkSubscription = async (tgId: number): Promise<boolean> => {
   const subscriptionRepo = AppDataSource.getRepository(Subscription);
   const subscriptions = await subscriptionRepo.find({
-    where: { user: { id: userId } },
+    where: { user: { telegramId: tgId.toString() } },
     relations: ["user"],
     order: { endDate: "DESC" },
   });
