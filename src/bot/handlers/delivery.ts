@@ -37,7 +37,7 @@ export const setupDeliveryHandlers = (
       }[newStatus];
 
       await notificationService.sendNotification(
-        order.user.telegramId,
+        +order.user.telegramId,
         `Статус вашего заказа #${order.orderNumber} изменен:\n` +
           `${statusEmoji} ${newStatus}`
       );

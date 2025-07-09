@@ -60,10 +60,12 @@ export const setupBot = async (bot: Bot<AppContext>) => {
 
     const userRepo = AppDataSource.getRepository(User);
 
-    let user = await userRepo.findOne({ where: { telegramId: ctx.from.id } });
+    let user = await userRepo.findOne({
+      where: { telegramId: ctx.from.id.toString() },
+    });
     if (!user) {
       user = userRepo.create({
-        telegramId: ctx.from.id,
+        telegramId: ctx.from.id.toString(),
         name: ctx.from.first_name,
       });
       await userRepo.save(user);
@@ -85,7 +87,7 @@ export const setupBot = async (bot: Bot<AppContext>) => {
     if (ctx.session.hasSubscription) {
       const userRepo = AppDataSource.getRepository(User);
       const user = await userRepo.findOne({
-        where: { telegramId: ctx.from.id },
+        where: { telegramId: ctx.from.id.toString() },
         relations: ["subscription"],
       });
 

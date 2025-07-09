@@ -30,11 +30,11 @@ export const authMiddleware = async (
     const cartRepo = AppDataSource.getRepository(Cart);
 
     let user = await userRepo.findOne({
-      where: { telegramId: parsedData.user.id },
+      where: { telegramId: parsedData.user.id.toString() },
     });
     if (!user) {
       user = userRepo.create({
-        telegramId: parsedData.user.id,
+        telegramId: parsedData.user.id.toString(),
         name: parsedData.user.first_name,
       });
       await userRepo.save(user);

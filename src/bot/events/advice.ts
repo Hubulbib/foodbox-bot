@@ -25,11 +25,11 @@ const handleAddAdvice = async (ctx: AppContext) => {
   // Получаем пользователя
   const userRepo = AppDataSource.getRepository(User);
   let user = await userRepo.findOne({
-    where: { telegramId: ctx.from.id },
+    where: { telegramId: ctx.from.id.toString() },
   });
   if (!user) {
     user = userRepo.create({
-      telegramId: ctx.from.id,
+      telegramId: ctx.from.id.toString(),
       name: ctx.from.first_name,
     });
     await userRepo.save(user);

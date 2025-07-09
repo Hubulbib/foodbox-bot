@@ -15,8 +15,8 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: "int", unique: true })
-  telegramId: number;
+  @Column({ type: "bigint", unique: true })
+  telegramId: string;
 
   @Column({ type: "varchar", nullable: true })
   name: string;

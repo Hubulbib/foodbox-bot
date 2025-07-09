@@ -29,7 +29,7 @@ export class NotificationService {
       `Сумма заказа: ${order.totalAmount} руб.\n` +
       `Адрес доставки: ${order.deliveryAddress}`;
 
-    await this.sendNotification(order.user.telegramId, message);
+    await this.sendNotification(+order.user.telegramId, message);
   }
 
   async sendDeliveryNotification(order: Order) {
@@ -39,7 +39,7 @@ export class NotificationService {
       `Адрес доставки: ${order.deliveryAddress}\n\n` +
       `Сумма к оплате: ${order.totalAmount} руб.`;
 
-    await this.sendNotification(order.user.telegramId, message);
+    await this.sendNotification(+order.user.telegramId, message);
   }
 
   async sendPaymentNotification(order: Order, paymentUrl: string) {
@@ -50,6 +50,6 @@ export class NotificationService {
       `${paymentUrl}\n\n` +
       `Ссылка действительна 30 минут.`;
 
-    await this.sendNotification(order.user.telegramId, message);
+    await this.sendNotification(+order.user.telegramId, message);
   }
 }

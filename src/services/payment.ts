@@ -50,7 +50,7 @@ export class PaymentService {
 
     try {
       const user = await userRepo.findOne({
-        where: { telegramId: ctx.from?.id },
+        where: { telegramId: ctx.from?.id.toString() },
       });
       if (!user) throw new Error("User not found");
 
@@ -77,7 +77,7 @@ export class PaymentService {
 
       // Отправляем уведомление об успешной оплате
       await this.notificationService.sendNotification(
-        user.telegramId,
+        +user.telegramId,
         `🎉 Подписка FOODBOX Premium успешно оформлена!\n\n` +
           `Действует до: ${endDate.toLocaleDateString()}\n` +
           `Теперь вы получаете специальные цены на все товары.`
@@ -153,7 +153,7 @@ export class PaymentService {
 
       // Отправляем уведомление пользователю
       await this.notificationService.sendNotification(
-        order.user.telegramId,
+        +order.user.telegramId,
         `✅ Заказ #${order.orderNumber} успешно оплачен!\n\n` +
           `Мы начали его обработку. О статусе заказа вы будете получать уведомления.`
       );
