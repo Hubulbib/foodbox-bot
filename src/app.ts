@@ -23,7 +23,7 @@ async function bootstrap() {
   const databaseService = new DatabaseService();
   await databaseService.initialize();
 
-  // Настройка сессии
+  // Настройка сессий
   bot.use(
     session({
       initial: (): SessionData => ({
