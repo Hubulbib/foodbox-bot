@@ -57,8 +57,6 @@ export const setupBot = async (bot: Bot<AppContext>) => {
 
   // Приветственное сообщение
   bot.command("start", async (ctx) => {
-    const isAdmin = ctx.from && ADMIN_IDS.includes(ctx.from.id);
-
     const userRepo = AppDataSource.getRepository(User);
 
     let user = await userRepo.findOne({
@@ -74,7 +72,7 @@ export const setupBot = async (bot: Bot<AppContext>) => {
 
     await ctx.reply(CONSTANTS.HELLO_TEXT, {
       parse_mode: "HTML",
-      reply_markup: getMainMenu(isAdmin),
+      reply_markup: getMainMenu(isAdmin(ctx)),
     });
   });
 
