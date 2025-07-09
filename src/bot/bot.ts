@@ -43,13 +43,14 @@ export const setupBot = async (bot: Bot<AppContext>) => {
     if (ctx.session.adviceStep) {
       await adviceEventsInit(ctx);
       return next();
-    } else if (isAdmin(ctx)) {
+    } else if (isAdmin(ctx) && ctx.session.adminAction) {
       await adminEventsInit(ctx, isAdmin);
       return next();
     } else {
       await ctx.reply("Выберите действие:", {
         reply_markup: getMainMenu(isAdmin(ctx)),
       });
+      return next();
     }
   });
 
