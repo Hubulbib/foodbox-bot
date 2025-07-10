@@ -149,6 +149,8 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
         .text("🖼 Фото", `edit_product_photo_${product.id}`)
         .text("📑 Категория", `edit_product_category_${product.id}`)
         .row()
+        .text("🧮 Единица измерения", `edit_product_pername_${product.id}`)
+        .row()
         .text("❌ Удалить товар", `delete_product_${product.id}`)
         .text("🔙 Назад", "admin_products_back");
 
@@ -158,6 +160,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
           `Описание: ${product.description}\n` +
           `Цена: ${product.price} руб.\n` +
           `Цена подписки: ${product.subscriptionPrice} руб.\n` +
+          `Единица измерения: ${product.pername}. \n` +
           `Категория: ${product.category?.name || "Не выбрана"}\n\n` +
           `Выберите, что хотите изменить:`,
         { reply_markup: keyboard }
@@ -212,6 +215,11 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       case "subscription":
         await ctx.editMessageText(
           "Введите новую цену подписки (только число):"
+        );
+        break;
+      case "pername":
+        await ctx.editMessageText(
+          "Введите единицу измерения товара (только название: 1 кг, 100 г, 1 лоток и тд):"
         );
         break;
       case "photo":
@@ -550,6 +558,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
           price: productData.price,
           subscriptionPrice: productData.subscriptionPrice,
           imageUrl: productData.imageUrl,
+          pername: productData.pername,
           category: category,
         });
 

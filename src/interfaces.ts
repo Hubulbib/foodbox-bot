@@ -8,7 +8,8 @@ export type AdminAction =
   | "edit_product_description"
   | "edit_product_price"
   | "edit_product_subscription"
-  | "edit_product_photo";
+  | "edit_product_photo"
+  | "edit_product_pername";
 
 export interface SessionData {
   cart?: number[];

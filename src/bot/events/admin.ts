@@ -25,6 +25,7 @@ export const adminEventsInit = async (
     case "edit_product_price":
     case "edit_product_subscription":
     case "edit_product_photo":
+    case "edit_product_pername":
       await handleEditProduct(ctx);
       break;
   }
@@ -83,9 +84,20 @@ async function handleAddProduct(ctx: AppContext) {
       return;
     }
     productData.subscriptionPrice = subscriptionPrice;
-    await ctx.reply("Отправьте фотографию товара:");
+    await ctx.reply(
+      "Введите единицу измерения товара (только название: 1 кг, 100 г, 1 лоток и тд):"
+    );
+  } else if (!productData.pername) {
+    // Шаг 5: Единица измерения
+    if (!ctx.message.text) {
+      await ctx.reply("Пожалуйста, введите единицу измерения:");
+      return;
+    }
+    productData.pername = ctx.message.text;
+
+    await ctx.reply("Отправьте фотографию товара: ");
   } else if (!productData.imageUrl) {
-    // Шаг 5: Фотография товара
+    // Шаг 6: Фотография товара
     if (!ctx.message.photo) {
       await ctx.reply("Пожалуйста, отправьте фотографию товара:");
       return;
@@ -94,7 +106,7 @@ async function handleAddProduct(ctx: AppContext) {
     const photo = ctx.message.photo[ctx.message.photo.length - 1];
     productData.imageUrl = photo.file_id;
 
-    // Шаг 6: Выбор категории
+    // Шаг 7: Выбор категории
     const categories = await categoryRepo.find();
     const keyboard = new InlineKeyboard();
 
@@ -185,6 +197,8 @@ async function handleEditProduct(ctx: AppContext) {
       return;
     }
     product.subscriptionPrice = subscriptionPrice;
+  } else if (action === "edit_product_pername" && ctx.message.text) {
+    product.pername = ctx.message.text;
   } else if (action === "edit_product_photo" && ctx.message.photo) {
     const photo = ctx.message.photo[ctx.message.photo.length - 1];
     product.imageUrl = photo.file_id;
