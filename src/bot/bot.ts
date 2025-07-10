@@ -127,9 +127,9 @@ export const setupBot = async (bot: Bot<AppContext>) => {
     });
   });
 
-  bot.hears("❓ Советы", async (ctx) => {
+  bot.hears("❓ Предложения", async (ctx) => {
     const inlineKeyboard = new InlineKeyboard()
-      .text("✍️ Написать совет", "create_advice")
+      .text("✍️ Написать предложение", "create_advice")
       .row()
       .text("🔙 Назад в меню", "back_to_menu");
 

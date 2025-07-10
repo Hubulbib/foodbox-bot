@@ -30,7 +30,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       .row()
       .text("📋 Управление заказами")
       .row()
-      .text("❓ Управление советами")
+      .text("❓ Управление предложениями")
       .row()
       .text("👥 Пользователи")
       .row()
@@ -55,7 +55,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       .row()
       .text("📋 Управление заказами")
       .row()
-      .text("❓ Управление советами")
+      .text("❓ Управление предложениями")
       .row()
       .text("👥 Пользователи")
       .row()
@@ -518,7 +518,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       .row()
       .text("📋 Управление заказами")
       .row()
-      .text("❓ Управление советами")
+      .text("❓ Управление предложениями")
       .row()
       .text("👥 Пользователи")
       .row()
@@ -597,7 +597,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
       .row()
       .text("📋 Управление заказами")
       .row()
-      .text("❓ Управление советами")
+      .text("❓ Управление предложениями")
       .row()
       .text("👥 Пользователи")
       .row()
@@ -609,7 +609,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
     });
   });
 
-  bot.hears("❓ Управление советами", async (ctx) => {
+  bot.hears("❓ Управление предложениями", async (ctx) => {
     if (!isAdmin(ctx)) return;
 
     const adviceRepo = AppDataSource.getRepository(Advice);
@@ -621,7 +621,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
     });
     const totalAdvices = await adviceRepo.count();
 
-    let message = "Последние советы пользователей:\n\n";
+    let message = "Последние предложения пользователей:\n\n";
     for (const advice of advices) {
       message += `📝 ${advice.text}\n👤 ${
         advice.user?.name || "Неизвестно"
@@ -653,7 +653,7 @@ export const setupAdminCommands = async (bot: Bot<AppContext>) => {
     });
     const totalAdvices = await adviceRepo.count();
 
-    let message = "Последние советы пользователей:\n\n";
+    let message = "Последние предложения пользователей:\n\n";
     for (const advice of advices) {
       message += `📝 ${advice.text}\n👤 ${
         advice.user?.name || "Неизвестно"

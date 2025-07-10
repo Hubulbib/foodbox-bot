@@ -12,7 +12,7 @@ export const getMainMenu = (isAdmin: boolean) => {
   const keyboard = new Keyboard()
 
     .text("🌟 Подписка")
-    .text("❓ Советы")
+    .text("❓ Предложения")
     .row()
     .text("ℹ️ О нас")
     .text("🧑‍💻 Поддержка");
