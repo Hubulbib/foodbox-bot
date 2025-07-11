@@ -1,6 +1,7 @@
 import { type Request, type Response, Router } from "express";
 import { AppDataSource } from "../services/database.js";
 import { Product } from "../entities/product.js";
+import { ImageService } from "../services/image.js";
 
 const router = Router();
 
@@ -12,6 +13,8 @@ router.get("/:id", async (req: Request, res: Response) => {
     where: { id: +id },
     relations: { category: true },
   });
+
+  product.imageUrl = await ImageService.getImage(product.imageUrl);
 
   res.json({ data: product });
 });

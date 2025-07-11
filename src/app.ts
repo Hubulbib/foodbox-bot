@@ -49,14 +49,28 @@ async function bootstrap() {
 
   app.use(express.json());
   app.use("/api/bot", webhookCallback(bot, "express"));
-  app.use(cors({ origin: process.env.WEB_APP_URL }));
+  //app.use(cors({ origin: process.env.WEB_APP_URL }));
   app.use(asyncHandler(authMiddleware));
   app.use("/api/cart", cartRouter);
   app.use("/api/catalog", catalogRouter);
   app.use("/api/order", orderRouter);
   app.use("/api/product", productRouter);
-  app.use("/api/image", imageRouter);
+  //app.use("/api/image", imageRouter);
   app.use("/api/subscription", subscriptionRouter);
+
+  // Глобальный обработчик ошибок (после всех роутов!)
+  app.use((err, req, res, next) => {
+    console.error("Глобальная ошибка:", err);
+
+    if (res.headersSent) {
+      return next(err);
+    }
+
+    res.status(500).json({
+      error: "Внутренняя ошибка сервера",
+      details: process.env.NODE_ENV === "development" ? err : undefined,
+    });
+  });
 
   app.listen(PORT, () => console.log(`Server has been started on ${PORT}`));
 

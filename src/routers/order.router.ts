@@ -15,7 +15,6 @@ router.get("/", async (req: Request, res: Response) => {
 
   const user = await userRepo.findOne({
     where: { telegramId: userData.id },
-    relations: ["orders"],
   });
 
   const orders = await orderRepo.find({
@@ -36,7 +35,6 @@ router.get("/:id", async (req: Request, res: Response) => {
 
   const user = await userRepo.findOne({
     where: { telegramId: userData.id },
-    relations: ["orders"],
   });
 
   const order = await orderRepo.findOne({
