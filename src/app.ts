@@ -49,7 +49,7 @@ async function bootstrap() {
 
   app.use(express.json());
   app.use("/api/bot", webhookCallback(bot, "express"));
-  //app.use(cors({ origin: process.env.WEB_APP_URL }));
+  app.use(cors({ origin: process.env.WEB_APP_URL }));
   app.use(asyncHandler(authMiddleware));
   app.use("/api/cart", cartRouter);
   app.use("/api/catalog", catalogRouter);
