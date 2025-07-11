@@ -4,6 +4,7 @@ import { Product } from "../entities/product.js";
 import { Cart } from "../entities/cart.js";
 import { User } from "../entities/user.js";
 import { CartItem } from "../entities/cart-item.js";
+import { ImageService } from "../services/image.js";
 
 const router = Router();
 
@@ -23,6 +24,16 @@ router.get("/", async (req: Request, res: Response) => {
     where: { user: { id: user.id } },
     relations: ["items", "items.product", "items.product.category"],
   });
+
+  cart["items"] = await Promise.all(
+    cart.items.map(async (el) => ({
+      ...el,
+      product: {
+        ...el.product,
+        imageUrl: await ImageService.getImage(el.product.imageUrl),
+      },
+    }))
+  );
 
   res.json({ data: cart?.items || [] });
 });
