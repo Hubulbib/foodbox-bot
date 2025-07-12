@@ -12,7 +12,6 @@ import { orderRouter } from "./routers/order.router.js";
 import { productRouter } from "./routers/product.router.js";
 import { authMiddleware } from "./middleware/auth.middleware.js";
 import { asyncHandler } from "./utils/asyncHandler.js";
-import { imageRouter } from "./routers/image.router.js";
 import { subscriptionRouter } from "./routers/subscription.router.js";
 
 async function bootstrap() {
@@ -57,7 +56,6 @@ async function bootstrap() {
   app.use("/api/catalog", catalogRouter);
   app.use("/api/order", orderRouter);
   app.use("/api/product", productRouter);
-  //app.use("/api/image", imageRouter);
   app.use("/api/subscription", subscriptionRouter);
 
   // Глобальный обработчик ошибок (после всех роутов!)

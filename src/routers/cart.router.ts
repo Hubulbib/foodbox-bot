@@ -38,47 +38,80 @@ router.get("/", async (req: Request, res: Response) => {
   res.json({ data: cart?.items || [] });
 });
 
-router.post("/product/:id", async (req: Request, res: Response) => {
+router.patch("/product/:id/inc", async (req: Request, res: Response) => {
   const { id } = req.params;
+
   const userData = req["user"];
 
+  const userRepo = AppDataSource.getRepository(User);
   const cartRepo = AppDataSource.getRepository(Cart);
   const cartItemRepo = AppDataSource.getRepository(CartItem);
-  const productRepo = AppDataSource.getRepository(Product);
+
+  const user = await userRepo.findOne({ where: { telegramId: userData.id } });
+  if (!user) return;
 
   const cart = await cartRepo.findOne({
-    where: { user: { telegramId: userData.id } },
-    relations: ["items", "items.product"],
+    where: { user: { id: user.id } },
   });
-  if (!cart) {
-    res.status(400).end();
-    return;
-  }
 
-  const product = await productRepo.findOne({ where: { id: +id } });
-  if (!product) {
-    res.status(400).end();
-    return;
-  }
+  if (!cart) return;
 
-  // Проверяем, есть ли уже такой товар в корзине
   let cartItem = await cartItemRepo.findOne({
-    where: { cart: { id: cart.id }, product: { id: product.id } },
+    where: { product: { id: +id }, cart: { id: cart.id } },
+    relations: ["product"],
   });
 
-  if (cartItem) {
-    cartItem.quantity += 1;
+  if (!cartItem) {
+    cartItem = cartItemRepo.create({ cart, productId: +id, quantity: 1 });
+    await cartItemRepo.save(cartItem);
   } else {
-    cartItem = cartItemRepo.create({
-      cart,
-      product,
-      quantity: 1,
-    });
+    await cartItemRepo.save({ ...cartItem, quantity: cartItem.quantity + 1 });
   }
 
-  await cartItemRepo.save(cartItem);
+  cartItem = await cartItemRepo.findOne({
+    where: { id: cartItem.id },
+    relations: ["product"],
+  });
 
-  res.status(201).end();
+  res.json({ data: cartItem }).end();
+});
+
+router.patch("/product/:id/dec", async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const userData = req["user"];
+
+  const userRepo = AppDataSource.getRepository(User);
+  const cartRepo = AppDataSource.getRepository(Cart);
+  const cartItemRepo = AppDataSource.getRepository(CartItem);
+
+  const user = await userRepo.findOne({ where: { telegramId: userData.id } });
+  if (!user) return;
+
+  const cart = await cartRepo.findOne({
+    where: { user: { id: user.id } },
+  });
+
+  if (!cart) return;
+
+  // Проверяем, принадлежит ли товар корзине пользователя
+  const cartItem = await cartItemRepo.findOne({
+    where: { product: { id: +id }, cart: { id: cart.id } },
+    relations: ["product"],
+  });
+
+  if (!cartItem) {
+    res.status(400).end();
+    return;
+  }
+
+  if (cartItem.quantity > 1) {
+    await cartItemRepo.save({ ...cartItem, quantity: cartItem.quantity - 1 });
+  } else {
+    // Если количество 1, удаляем товар полностью
+    await cartItemRepo.delete({ productId: +id });
+  }
+  res.json({ data: cartItem }).end();
 });
 
 router.delete("/product/:id", async (req: Request, res: Response) => {
@@ -113,47 +146,6 @@ router.delete("/product/:id", async (req: Request, res: Response) => {
   // Удаляем товар из корзины
   await cartItemRepo.delete(+id);
 
-  res.status(200).end();
-});
-
-router.patch("/product/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { quantity } = req.body;
-
-  const userData = req["user"];
-
-  const userRepo = AppDataSource.getRepository(User);
-  const cartRepo = AppDataSource.getRepository(Cart);
-  const cartItemRepo = AppDataSource.getRepository(CartItem);
-
-  const user = await userRepo.findOne({ where: { telegramId: userData.id } });
-  if (!user) return;
-
-  const cart = await cartRepo.findOne({
-    where: { user: { id: user.id } },
-    relations: ["items"],
-  });
-
-  if (!cart) return;
-
-  // Проверяем, принадлежит ли товар корзине пользователя
-  const cartItem = await cartItemRepo.findOne({
-    where: { id: +id, cart: { id: cart.id } },
-    relations: ["product"],
-  });
-
-  if (!cartItem) {
-    res.status(400).end();
-    return;
-  }
-
-  if (quantity >= 1) {
-    cartItem.quantity = quantity;
-    await cartItemRepo.save(cartItem);
-  } else {
-    // Если количество 0, удаляем товар полностью
-    await cartItemRepo.delete(+id);
-  }
   res.status(200).end();
 });
 

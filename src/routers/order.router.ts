@@ -5,6 +5,7 @@ import { Order, OrderStatus } from "../entities/order.js";
 import { Cart } from "../entities/cart.js";
 import { OrderItem } from "../entities/order-item.js";
 import { checkSubscription } from "../utils/helpers.js";
+import { ImageService } from "../services/image.js";
 
 const router = Router();
 
@@ -22,6 +23,14 @@ router.get("/", async (req: Request, res: Response) => {
     order: { createdAt: "DESC" },
     relations: ["items", "items.product"],
   });
+
+  for (const order of orders) {
+    for (const item of order.items) {
+      item.product.imageUrl = await ImageService.getImage(
+        item.product.imageUrl
+      );
+    }
+  }
 
   res.json({ data: orders });
 });
@@ -41,6 +50,10 @@ router.get("/:id", async (req: Request, res: Response) => {
     where: { user: { id: user.id }, id: +id },
     relations: ["items", "items.product", "items.product.category"],
   });
+
+  for (const item of order.items) {
+    item.product.imageUrl = await ImageService.getImage(item.product.imageUrl);
+  }
 
   res.json({ data: order });
 });
